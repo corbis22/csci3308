@@ -1,0 +1,28 @@
+Corey Stephens
+
+Step 4:
+1) mkdir cs3308
+2) mv cs3308 CSCI3308
+3) No hidden files, even with the -a option
+4) Eyjafjallajokull_volcano_plume_2010_04_14.jp, found using ls -lS
+5) 128 bytes, using cp
+6) 7.8 megabytes
+7) 8.4 megabytes
+8) rm -r and rm
+9) tar -xvf: -x extracts, -v for verbose output, -f to pass a filename
+10) little2.zip has the files in a directory called "little," little1.zip does not
+11) relative: ./Mystery/32/target.txt, absolute: /Users/Corey/CSCI/csci3308/Labs/Lab1/Mystery/32/target.txt
+12) touch newstory.txt
+    head -n 5 dracula.txt > newstory.txt
+    tail -n 5 heartofdarkness.txt >> newstory.txt
+
+Step 5:
+1) sort -t : -k 1 passwd_demo.txt
+2) sort -t : -k 3 -n passwd_demotxt
+3) sort -t : -k 4 -k 3 -n passwd_demo.txt
+4) grep -e daemon passwd_demo.txt
+5) wc -l passwd_demo.txt
+6) sort -t : -k 4 -u passwd_demo.txt
+7) sort -t : -k 4 -u passwd_demo.txt > tmp
+8) bash GetUniqueGID.sh
+   Didn't encounter any errors, but chmod -x makes a file executable

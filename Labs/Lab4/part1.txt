@@ -1,0 +1,19 @@
+Corey Stephens
+
+1) #div1 {
+	background: blue;
+   }
+
+2) Margin changes the spacing between the outside of the div and surrounding elements. Padding changes the spacing between the inside of the div and its children
+
+3) If the margin is >100px, the <p> moves outside the box and the background color disappears. If padding is >100px, the <p> moves outside the box but brings a giant yellow square with it
+
+4) Scroll overflow turns the div into a scrollable box that allows the user to scroll around and view the entire contents. Hidden overflow just cuts off anything rendered outside the div
+
+5)  Float:left arranges the divs horizontally in the top left in the order 1, 2, 3 from left to right. Float:right does the same but in the top right and in the order 3, 2, 1
+
+6) Giving a div the float:left rule will force it to the left side of the screen, leaving the other divs in place, and the clear:right rule will force it to drop below other elements until there is nothing to the right of it
+
+7) div1 and div2 have float:left, and div3 has clear:left
+
+8) All the elements move right up to the top left corner of the screen, so the default margin for the body element must be >0px

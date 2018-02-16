@@ -1,0 +1,104 @@
+Corey Stephens
+Lab2 Solutions
+
+
+Step 2:
+1) diff fruits_v1.txt fruits_v2.txt
+	Cranberry, Nectarine, and Prickly Pear have been added, and Jackfruit has been removed
+2) > means the text is present in the second file but not the first, < means it's in the first file but not the second
+3) -c prints the entire file and highlights differences
+
+
+Step 3:
+1) wc -l password_demo.txt
+	15 lines
+2) wc -c password_demo.txt
+	692 characters
+
+
+Step 4:
+1) cut -f 1 -d : password_demo.txt
+	root
+	daemon
+	sys
+	games
+	mail
+	www-data
+	backup
+	nobody
+	syslog
+	whoopsie
+	user
+	sshd
+	ntp
+	mysql
+	vboxadd
+2) cut -f 2,4 -d " " grades.txt
+	LN HW1
+	Slaven 1
+	Eustathios 1
+	Sasa 0
+	Gerard 1
+	Babur 0
+	Marin 0
+	Marko 1
+
+
+Step 5:
+1) cut -f 4 -d : password_demo.txt | sort -un
+	0
+	1
+	2
+	3
+	5
+	99
+	999
+	1000
+	1337
+2) cut -f 4 -d : password_demo.txt | sort -un > groups.txt
+3) cut -d : of 1,6 password_demo.txt | grep '^[mws]'
+	sys:/dev
+	mail:/var/mail
+	www-data:/var/www
+	syslog:/home/syslog
+	whoopsie:/nonexistent
+	sshd:/var/run/sshd
+	mysql:/nonexistent
+
+
+Step 6:
+1)A) sed 's/[a-z]//g' cryptic.txt
+	0 4 34 4 053 70 473 7 0 4'7 43 17 1
+  B) sed 's/[0-9]//g' cryptic.txt
+	yu cn ld  hr  wr bu yu cn' mk  drk
+  C) sed 's/[0-9]/_/g' cryptic.txt
+	y_u c_n l__d _ h_r__ __ w___r bu_ y_u c_n'_ m_k_ __ dr_nk
+2) cat cryptic.txt | bash decrypt.sh
+	bash file : sed 's/0/o/g' | sed 's/1/i/g' | sed 's/3/e/g' | sed 's/4/a/g' | sed 's/5/s/g' | sed 's/7/t/g'
+	Can be done without piping using the -e option before each command
+3) The script is already filename independent, it just needs input piped to it rather than taking a file as an argument
+
+
+Step 7:
+1) awk '{if (NR!=1) {print $1 " " $2 " " (($3+$4+$5+$6)/5)}' grades.txt
+	Ryan Slaven 0.6
+	Jephthah Eustathios 0.4
+	Andreas Saša 0.4
+	Godofredo Gerard 0.8
+	Edwin Babur 0.6
+	Ahmad Marin 0
+	Jett Marko 0.6
+2) awk '{if (NR!=1) {print (($3+$4+$5+$6)/5)}' grades.txt | awk '{RS=""; FS="\n"} {sum=0; for (i=1;i<NF;i++) {sum += $i; print sum/NF}'
+	0
+	0.366667
+
+
+Step 8:
+1) grep '[0-9][0-9][0-9]-' regex_practice_data.txt | wc -l
+	770
+2) grep '303-441-' regex_practice_data.txt |wc -l
+	51
+3) grep '[A-Za-z]\+@.*\.' regex_practice_data.txt | wc -l
+	17148
+4) grep '[A-Za-z]\+@.*\.gov' regex_practice_data.txt | wc -l
+	48
