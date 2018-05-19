@@ -1,0 +1,271 @@
+# Corey Stephens
+
+
+# 1
+select LastName, FirstName
+  from nwEmployees
+  where not country = 'USA'
+  and Extract(year from now()) - Extract(year from HireDate) > 5
+  order by LastName;
++-----------+-----------+
+| LastName  | FirstName |
++-----------+-----------+
+| Dodsworth | Anne      |
+| King      | Robert    |
+| Suyama    | Michael   |
++-----------+-----------+
+
+# 2
+select ProductID, ProductName, UnitsInStock, UnitPrice
+  from nwProducts
+  where UnitsInStock <= ReorderLevel;
++-----------+----------------------------+--------------+--------------+-----------+
+| ProductID | ProductName                | UnitsInStock | ReorderLevel | UnitPrice |
++-----------+----------------------------+--------------+--------------+-----------+
+|         2 | Chang                      |           17 |           25 |     19.00 |
+|         3 | Aniseed Syrup              |           13 |           25 |     10.00 |
+|        11 | Queso Cabrales             |           22 |           30 |     21.00 |
+|        21 | Sir Rodney's Scones        |            3 |            5 |     10.00 |
+|        30 | Nord-Ost Matjeshering      |           10 |           15 |     25.89 |
+|        31 | Gorgonzola Telino          |            0 |           20 |     12.50 |
+|        32 | Mascarpone Fabioli         |            9 |           25 |     32.00 |
+|        37 | Gravad lax                 |           11 |           25 |     26.00 |
+|        43 | Ipoh Coffee                |           17 |           25 |     46.00 |
+|        45 | Rogede sild                |            5 |           15 |      9.50 |
+|        48 | Chocolade                  |           15 |           25 |     12.75 |
+|        49 | Maxilaku                   |           10 |           15 |     20.00 |
+|        56 | Gnocchi di nonna Alice     |           21 |           30 |     38.00 |
+|        64 | Wimmers gute Semmelknˆdel  |           22 |           30 |     33.25 |
+|        66 | Louisiana Hot Spiced Okra  |            4 |           20 |     17.00 |
+|        68 | Scottish Longbreads        |            6 |           15 |     12.50 |
+|        70 | Outback Lager              |           15 |           30 |     15.00 |
+|        74 | Longlife Tofu              |            4 |            5 |     10.00 |
++-----------+----------------------------+--------------+--------------+-----------+
+
+# 3
+select ProductName, UnitPrice from nwProducts
+  where UnitPrice = (
+    select max(UnitPrice)
+    from nwProducts);
++----------------+-----------+
+| ProductName    | UnitPrice |
++----------------+-----------+
+| CÙte de Blaye  |    263.50 |
++----------------+-----------+
+
+# 4
+select ProductID, ProductName, (UnitPrice * UnitsInStock) as TotalInventoryValue
+  from nwProducts
+  where UnitPrice * UnitsInStock > 2000
+  order by TotalInventoryValue;
++-----------+------------------------------+---------------------+
+| ProductID | ProductName                  | TotalInventoryValue |
++-----------+------------------------------+---------------------+
+|        36 | Inlagd Sill                  |             2128.00 |
+|        27 | Schoggi Schokolade           |             2151.10 |
+|        22 | Gustaf's Kn‰ckebrˆd          |             2184.00 |
+|        40 | Boston Crab Meat             |             2263.20 |
+|        18 | Carnarvon Tigers             |             2625.00 |
+|        55 | P‚tÈ chinois                 |             2760.00 |
+|         9 | Mishi Kobe Niku              |             2813.00 |
+|         6 | Grandma's Boysenberry Spread |             3000.00 |
+|        61 | Sirop d'Èrable               |             3220.50 |
+|        20 | Sir Rodney's Marmalade       |             3240.00 |
+|        12 | Queso Manchego La Pastora    |             3268.00 |
+|        59 | Raclette Courdavault         |             4345.00 |
+|        38 | CÙte de Blaye                |             4479.50 |
++-----------+------------------------------+---------------------+
+
+# 5
+select ShipCountry, count(*) as ShippedOrders
+  from nwOrders
+  where not Shipcountry = 'USA'
+  and extract(year from ShippedDate) = 2013
+  and extract(month from ShippedDate) = 9
+  group by ShipCountry;
++-------------+---------------+
+| ShipCountry | ShippedOrders |
++-------------+---------------+
+| Brazil      |             4 |
+| France      |             3 |
+| Germany     |             1 |
+| Ireland     |             1 |
+| Italy       |             2 |
+| Mexico      |             3 |
+| Spain       |             2 |
+| Sweden      |             1 |
+| Venezuela   |             1 |
++-------------+---------------+
+
+
+# 6
+select CustomerID, CompanyName
+  from nwCustomers C
+  where (
+    select count(*) as Orders
+      from nwOrders
+      where C.CustomerID = CustomerID
+      group by CustomerID);
++------------+--------------------+
+| CustomerID | CompanyName        |
++------------+--------------------+
+| ERNSH      | Ernst Handel       |
+| QUICK      | QUICK-Stop         |
+| SAVEA      | Save-a-lot Markets |
++------------+--------------------+
+
+# 7
+select SupplierID, InventoryValue
+  from (
+    select SupplierID, sum(UnitsInStock * UnitPrice) as InventoryValue, count(ProductID) as NumProducts
+    from nwProducts
+    group by SupplierID
+    ) as t
+  where NumProducts > 3;
++------------+----------------+
+| SupplierID | InventoryValue |
++------------+----------------+
+|          2 |        2833.80 |
+|          7 |        4409.65 |
+|          8 |        3575.00 |
+|         12 |        3301.85 |
++------------+----------------+
+
+# 8
+select CompanyName, ProductName, UnitPrice
+  from nwProducts
+  join nwSuppliers on nwProducts.SupplierID = nwSuppliers.SupplierID
+  where Country='USA'
+  order by UnitPrice desc;
++-----------------------------+----------------------------------+-----------+
+| CompanyName                 | ProductName                      | UnitPrice |
++-----------------------------+----------------------------------+-----------+
+| Grandma Kelly's Homestead   | Northwoods Cranberry Sauce       |     40.00 |
+| Grandma Kelly's Homestead   | Uncle Bob's Organic Dried Pears  |     30.00 |
+| Grandma Kelly's Homestead   | Grandma's Boysenberry Spread     |     25.00 |
+| New Orleans Cajun Delights  | Chef Anton's Cajun Seasoning     |     22.00 |
+| New Orleans Cajun Delights  | Chef Anton's Gumbo Mix           |     21.35 |
+| New Orleans Cajun Delights  | Louisiana Fiery Hot Pepper Sauce |     21.05 |
+| New England Seafood Cannery | Boston Crab Meat                 |     18.40 |
+| Bigfoot Breweries           | Steeleye Stout                   |     18.00 |
+| New Orleans Cajun Delights  | Louisiana Hot Spiced Okra        |     17.00 |
+| Bigfoot Breweries           | Sasquatch Ale                    |     14.00 |
+| Bigfoot Breweries           | Laughing Lumberjack Lager        |     14.00 |
+| New England Seafood Cannery | Jack's New England Clam Chowder  |      9.65 |
++-----------------------------+----------------------------------+-----------+
+
+select LastName, FirstName, Title, Extension
+  from nwEmployees E
+  where (
+    select count(*)
+    from nwOrders
+    where E.EmployeeID = EmployeeID
+    group by EmployeeID
+  ) > 100;
++-----------+-----------+--------------------------+-----------+
+| LastName  | FirstName | Title                    | Extension |
++-----------+-----------+--------------------------+-----------+
+| Davolio   | Nancy     | Sales Representative     | 5467      |
+| Leverling | Janet     | Sales Representative     | 3355      |
+| Peacock   | Margaret  | Sales Representative     | 5176      |
+| Callahan  | Laura     | Inside Sales Coordinator | 2344      |
++-----------+-----------+--------------------------+-----------+
+
+# 10
+select CustomerID, CompanyName
+  from nwCustomers
+  where CustomerID not in (
+    select CustomerID from nwOrders);
++------------+--------------------------------------+
+| CustomerID | CompanyName                          |
++------------+--------------------------------------+
+| FISSA      | FISSA Fabrica Inter. Salchichas S.A. |
+| PARIS      | Paris specialites                    |
++------------+--------------------------------------+
+
+# 11
+select S.CompanyName, S.ContactName, C.CategoryName, C.Description, P.ProductName, P.UnitsOnOrder
+  from nwSuppliers S
+  join nwProducts P on S.SupplierID
+  join nwCategories C on P.CategoryID = C.CategoryID
+  where P.UnitsInStock = 0;
++-------------------------------------+-----------------+----------------+------------------------------------------------------------+--------------------------+--------------+
+| CompanyName                         | ContactName     | CategoryName   | Description                                                | ProductName              | UnitsOnOrder |
++-------------------------------------+-----------------+----------------+------------------------------------------------------------+--------------------------+--------------+
+| New Orleans Cajun Delights          | Shelley Burke   | Condiments     | Sweet and savory sauces, relishes, spreads, and seasonings | Chef Anton's Gumbo Mix   |            0 |
+| Pavlova Ltd.                        | Ian Devling     | Meat/Poultry   | Prepared meats                                             | Alice Mutton             |            0 |
+| Plutzer Lebensmittelgroßmärkte AG   | Martin Bein     | Meat/Poultry   | Prepared meats                                             | Th¸ringer Rostbratwurst  |            0 |
+| Formaggi Fortini s.r.l.             | Elio Rossi      | Dairy Products | Cheeses                                                    | Gorgonzola Telino        |           70 |
+| G'day Mate                          | Wendy Mackenzie | Meat/Poultry   | Prepared meats                                             | Perth Pasties            |            0 |
++-------------------------------------+-----------------+----------------+------------------------------------------------------------+--------------------------+--------------+
+
+# 12
+select P.ProductName, s.CompanyName, S.Country, P.UnitsInStock
+  from nwProducts P
+  join nwSuppliers S on P.SupplierID = S.SupplierID
+  join nwCategories C on P.CategoryID = P.CategoryID
+  where P.CategoryID = 1;
++---------------------------+-------------------------------------+-----------+--------------+
+| ProductName               | CompanyName                         | Country   | UnitsInStock |
++---------------------------+-------------------------------------+-----------+--------------+
+| Chai                      | Exotic Liquids                      | UK        |           39 |
+| Chang                     | Exotic Liquids                      | UK        |           17 |
+| Guaran· Fant·stica        | Refrescos Americanas LTDA           | Brazil    |           20 |
+| Sasquatch Ale             | Bigfoot Breweries                   | USA       |          111 |
+| Steeleye Stout            | Bigfoot Breweries                   | USA       |           20 |
+| CÙte de Blaye             | Aux joyeux ecclésiastiques          | France    |           17 |
+| Chartreuse verte          | Aux joyeux ecclésiastiques          | France    |           69 |
+| Ipoh Coffee               | Leka Trading                        | Singapore |           17 |
+| Laughing Lumberjack Lager | Bigfoot Breweries                   | USA       |           52 |
+| Outback Lager             | Pavlova Ltd.                        | Australia |           15 |
+| Rhˆnbr‰u Klosterbier      | Plutzer Lebensmittelgroßmärkte AG   | Germany   |          125 |
+| Lakkalikˆˆri              | Karkki Oy                           | Finland   |           57 |
++---------------------------+-------------------------------------+-----------+--------------+
+
+# 13
+create table Top_Items (
+  ItemID INT PRIMARY KEY,
+  ItemCode INT,
+  ItemName VARCHAR(40),
+  InventoryDate DATE,
+  SupplierID INT,
+  ItemQuantity INT,
+  ItemPrice DECIMAL(9,2));
+
+# 14
+insert into Top_Items
+  (ItemID, Itemcode, ItemName, InventoryDate, ItemQuantity, ItemPrice, SupplierID)
+  select ProductID, CategoryID, ProductName, curdate(), UnitsInStock, UnitPrice, SupplierID
+  from nwProducts
+  where UnitPrice * UnitsInStock > 2500;
++--------+----------+------------------------------+---------------+------------+--------------+-----------+
+| ItemID | ItemCode | ItemName                     | InventoryDate | SupplierID | ItemQuantity | ItemPrice |
++--------+----------+------------------------------+---------------+------------+--------------+-----------+
+|      6 |        2 | Grandma's Boysenberry Spread | 2018-03-14    |          3 |          120 |     25.00 |
+|      9 |        6 | Mishi Kobe Niku              | 2018-03-14    |          4 |           29 |     97.00 |
+|     12 |        4 | Queso Manchego La Pastora    | 2018-03-14    |          5 |           86 |     38.00 |
+|     18 |        8 | Carnarvon Tigers             | 2018-03-14    |          7 |           42 |     62.50 |
+|     20 |        3 | Sir Rodney's Marmalade       | 2018-03-14    |          8 |           40 |     81.00 |
+|     38 |        1 | CÙte de Blaye                | 2018-03-14    |         18 |           17 |    263.50 |
+|     55 |        6 | P‚tÈ chinois                 | 2018-03-14    |         25 |          115 |     24.00 |
+|     59 |        4 | Raclette Courdavault         | 2018-03-14    |         28 |           79 |     55.00 |
+|     61 |        2 | Sirop d'Èrable               | 2018-03-14    |         29 |          113 |     28.50 |
++--------+----------+------------------------------+---------------+------------+--------------+-----------+
+
+# 15
+delete from Top_Items
+  where SupplierID in (
+    select SupplierID
+    from nwSuppliers
+    where Country='Canada');
+
+# 16
+alter table Top_Items
+  add InventoryValue decimal(9,2);
+
+# 17
+update Top_Items
+  set InventoryValue = ItemPrice * ItemQuantity;
+
+# 18
+drop table Top_Items;

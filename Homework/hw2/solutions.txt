@@ -1,0 +1,9 @@
+Corey Stephens
+
+Q: What are the things needed for Bootstrap to be loaded?
+A: jQuery and Popper.js must first be loaded before Boostrap
+
+Q: How does Bootstrap's Grid system work?
+A: Bootstrap's Grid is built on top of CSS's build in flexbox system and can be used to organize content on a web page.
+  It uses a system of twelve columns nested within a number of rows. These columns can be customized in their width and spacing,
+  and will automatically adapt to resized or unconventional screen formats.

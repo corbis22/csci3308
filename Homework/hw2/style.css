@@ -1,0 +1,30 @@
+/* Corey Stephens */
+
+.grid-text {
+  text-align : center;
+  color: white;
+  padding: 15px;
+  font-size: 15px;
+}
+.l1 {
+  background: red;
+}
+.l2 {
+  background: orange;
+}
+.l3 {
+  background: black;
+}
+.l4 {
+  background: green;
+}
+.l5 {
+  background: blue;
+}
+.l6 {
+  background: purple;
+}
+
+.container {
+  margin-top: 30px;
+}
